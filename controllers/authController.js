@@ -70,7 +70,7 @@ exports.checkUser = (req, res, next) => {
   
     if (!token) return next(new Error("Ooops Please log in"));
   
-    decodedToken = jwt.verify(token.split(" ")[1], "Stack");
+    decodedToken = jwt.verify(token.split(" ")[1],process.env.JWT_SECRET);
   
     const user = decodedToken;
   
