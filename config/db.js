@@ -1,4 +1,6 @@
 const Sequelize = require('sequelize')
+const sequelizeTransforms = require('sequelize-transforms');
+ 
 
 // Option 3: Passing parameters separately (other dialects)
 const sequelize = new Sequelize(
@@ -25,5 +27,6 @@ const sequelize = new Sequelize(
   
 })()
 
+sequelizeTransforms(sequelize);
 
 module.exports = sequelize;

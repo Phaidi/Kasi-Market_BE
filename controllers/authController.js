@@ -2,6 +2,8 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const authV = require('../controller_validation/authValidator');
+const validator = require('validator')
 
 const signToken = (user) => {
 
@@ -10,7 +12,7 @@ const signToken = (user) => {
       {
         name: user.name,
         id: user.id,
-        // userType: user.userType,
+        userType: user.userType,
         email: user.email,
         photo: user.photo,
       },
@@ -20,13 +22,22 @@ const signToken = (user) => {
   };
 
 exports.signUp = catchAsync(async (req, res, next) => {
-  const user = await User.create(req.body);
+
+
+  const {error, value} = authV.regValidation(req.body)
+
+  if(error) return next( new Error(error.details[0].message))
+  
+
+  const user = await User.create(value);
+
   res.status(200).json({
     status: "success",
     message: "Register successfull",
-   
+    error
   });
 });
+
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -44,8 +55,8 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await bcrypt.compare(password, user.password)))
     return next(new Error("Incorrect email or password"));
 
-  if (user.verified == false)
-    return next(new Error("Please verify your email address"));
+  if (user.isActive == false)
+    return next(new Error("Account deactivated!!"));
 
   const token = signToken(user);
 
@@ -63,6 +74,8 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
+
+
 exports.checkUser = (req, res, next) => {
     //Your code goes here.......
   
@@ -78,3 +91,16 @@ exports.checkUser = (req, res, next) => {
   
     next();
   };
+
+  exports.restrictTo = (...roles) => {
+
+    return (req, res, next) => {
+        const { userType } = req.user;
+
+        if (roles.includes(userType)) {
+            return next(new Error('Sorry you dont have permission to perform this action'))
+        }
+
+        next();
+    }
+}

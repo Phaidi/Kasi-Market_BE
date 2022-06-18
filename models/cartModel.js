@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const sequelize =  require("../config/db") 
 const User = require('./userModel');
-const Iterm = require('./itermModel');
+const Item = require('./itemModel');
 
 const Cart = sequelize.define('cart',{
     id:{
@@ -14,6 +14,7 @@ const Cart = sequelize.define('cart',{
         allowNull: false,
         defaultValue: 1,
     },
+    
 
    
     
@@ -27,12 +28,13 @@ const Cart = sequelize.define('cart',{
 User.hasOne(Cart, {onDelete: 'CASCADE',foreignKey: 'userId'});
 Cart.belongsTo(User);
 
-Iterm.hasOne(Cart, {onDelete: 'CASCADE',foreignKey: 'itermId'});
-Cart.belongsTo(Iterm);
+Item.hasOne(Cart, {onDelete: 'CASCADE',foreignKey: 'itemId'});
+Cart.belongsTo(Item);
+
+// User.hasOne(Cart, {onDelete: 'CASCADE',foreignKey: 'vendorId'});
+// Cart.belongsTo(User ,{onDelete: 'CASCADE',foreignKey: 'vendorId'});
 
 module.exports = Cart;
-
-
 
 
 

@@ -1,7 +1,7 @@
 const Cart = require("../models/cartModel");
 const catchAsync  = require('../utils/catchAsync')
 const User = require('../models/userModel')
-const Iterm = require('../models/itermModel')
+const Iterm = require('../models/itemModel')
 
 
 exports.setUserId = (req, res, next) => {
@@ -17,9 +17,11 @@ exports.createCart = catchAsync(async(req,res,next)=> {
     
     res.status(200).json({
         status: "success",
+        message: "Added to cart",
         cart
     })
 })
+//ADMIN
 
 exports.getAllCarts = async(req,res,next)=> {
 
@@ -34,7 +36,7 @@ exports.getAllCarts = async(req,res,next)=> {
           ],
         });
 
-console.log(req.user)
+
     res.status(200).json({
         status: "success",
         message: "Hello from get all Blogs route 😜",
