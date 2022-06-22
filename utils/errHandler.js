@@ -16,6 +16,7 @@ const modelErrHandle = (err) => {
 };
 
 const handleDublicateEntry = (err) => {
+ console(err.fields)
   const message = err.parent.sqlMessage;
   // console.log(message)
   return newError(message);

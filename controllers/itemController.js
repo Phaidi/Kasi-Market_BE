@@ -1,4 +1,5 @@
 const Item = require("../models/itemModel");
+const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const sequelize = require('../config/db')
 
@@ -11,6 +12,7 @@ exports.getAllItems = catchAsync(async (req, res, next) => {
     items,
   });
 });
+
 
 exports.getAllVendorItems = catchAsync(async (req, res, next) => {
 
@@ -28,15 +30,22 @@ exports.getItem = catchAsync(async (req, res, next) => {
 
   const item = await Item.findOne({
     where: {id : req.params.id}
+    
 })
-  
+
+const user = await User.findOne({
+  where: {id : item.vendorId}
+})
+  console.log("hello user:", user);
   res.status(200).json({
     status: "success",
     item,
+    user
   });
 });
 
 exports.createItem = catchAsync(async (req, res, next) => {
+  req.body.vendorId = req.user.id;
   const item = await Item.create(req.body);
   res.status(200).json({
     status: "success",
